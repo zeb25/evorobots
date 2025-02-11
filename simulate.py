@@ -33,5 +33,5 @@ for i in range(1000):
 	time.sleep(1/60)
 
 p.disconnect()
-numpy.save("data/back_leg_sensor_values.npy", backLegSensorValues)
-numpy.save("data/front_leg_sensor_values.npy", frontLegSensorValues)
+numpy.save("../data/back_leg_sensor_values.npy", backLegSensorValues)
+numpy.save("../data/front_leg_sensor_values.npy", frontLegSensorValues)
