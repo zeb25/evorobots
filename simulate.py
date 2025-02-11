@@ -26,6 +26,7 @@ for i in range(1000):
 	backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
 	print("backleg sensor value: ")
 	print(backLegSensorValues[i])
+	
 	frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
 	print("frontleg sensor value: ")
 	print(frontLegSensorValues[i])
