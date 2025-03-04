@@ -13,14 +13,12 @@ from pyrosim.neuralNetwork import NEURAL_NETWORK
 class ROBOT:
 
     def __init__(self):
-
+        self.robotId = p.loadURDF("body.urdf")
         self.motors = {}
         self.sensors = {}
-        self.robotId = p.loadURDF("body.urdf")
-        self.nn = NEURAL_NETWORK("brain.nndf")
-
         # Prepare simulation
         pyrosim.Prepare_To_Simulate(self.robotId)
+        self.nn = NEURAL_NETWORK("brain.nndf")
 
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
@@ -41,16 +39,10 @@ class ROBOT:
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
+                if isinstance(jointName, str):
+                    jointName = jointName.encode("utf-8")
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
-                # print(neuronName, jointName, desiredAngle)
-
-                self.motors[jointName].Set_Value(self.robotId,desiredAngle)
-
-        '''
-        for motor in self.motors.values():
-            motor.Set_Value(self, t)
-        '''
-        
+                self.motors[jointName].Set_Value(self.robotId, desiredAngle)
 
     def Think(self):
         self.nn.Update()
