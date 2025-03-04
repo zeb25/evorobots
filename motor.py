@@ -28,9 +28,9 @@ class MOTOR:
         time_steps = numpy.linspace(0, 2 * math.pi, c.ITERATIONS)
         self.motorValues = self.amplitude * numpy.sin(self.frequency * time_steps + self.offset)
 
-    def Set_Value(self, robot, t):
+    def Set_Value(self, robot, desiredAngle):
 
-        targetPosition = self.motorValues[t]  
+        targetPosition = desiredAngle  
 
         pyrosim.Set_Motor_For_Joint(
                 bodyIndex=robot.robotId,

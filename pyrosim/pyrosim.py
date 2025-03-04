@@ -153,13 +153,13 @@ def Send_Synapse( sourceNeuronName , targetNeuronName , weight ):
     f.write('    <synapse sourceNeuronName = "' + str(sourceNeuronName) + '" targetNeuronName = "' + str(targetNeuronName) + '" weight = "' + str(weight) + '" />\n')
 
  
-def Set_Motor_For_Joint(bodyIndex,jointName,controlMode,targetPosition,maxForce):
+def Set_Motor_For_Joint(self, bodyIndex,jointName,controlMode,targetPosition,maxForce):
 
     p.setJointMotorControl2(
 
         bodyIndex      = bodyIndex,
 
-        jointIndex     = jointNamesToIndices[jointName],
+        jointIndex     = jointNamesToIndices[jointName.encode('ASCII')],
 
         controlMode    = controlMode,
 
