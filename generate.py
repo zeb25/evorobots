@@ -53,11 +53,9 @@ def Generate_Brain():
 
     for i in range(0,3):
         for j in range(0,5):
-            # weight = -1.0 + (sensor * 0.0002)  # Example weight variation
             pyrosim.Send_Synapse(sourceNeuronName=i, targetNeuronName=j, weight=random.uniform(-1,1))
 
     pyrosim.End()
-
 
 Create_World()
 Generate_Body()
