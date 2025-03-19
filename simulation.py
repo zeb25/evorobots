@@ -2,7 +2,7 @@ import pybullet as p
 import time
 import pybullet_data
 import pyrosim.pyrosim as pyrosim
-import numpy as numpy
+import numpy
 import random
 import math
 import constants as c
@@ -12,28 +12,32 @@ from motor import MOTOR
 
 class SIMULATION:
     
-    def __init__(self):
+    def __init__(self, directOrGUI):
+
+        self.directOrGUI = directOrGUI
+
+        if self.directOrGUI=="DIRECT":
+            self.physicsClient = p.connect(p.DIRECT)
+        else:
+            self.physicsClient = p.connect(p.GUI)
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
+        p.setGravity(0, 0, c.GRAVITY, self.physicsClient)
 
         self.world = WORLD()
         self.robot = ROBOT()
 
-
     def Run(self):
         
         for t in range(c.ITERATIONS):
+            p.stepSimulation()
             self.robot.Sense(t)
             self.robot.Think()
             self.robot.Act(t)
-            p.stepSimulation()
             time.sleep(c.TIME_STEP)
-
-            # print("Iteration: ", t)
-
-        self.Save_Data()
-
-    def Save_Data(self):
-        numpy.save("data/back_leg_sensor_values.npy", self.backLegSensorValues)
-        numpy.save("data/front_leg_sensor_values.npy", self.frontLegSensorValues)
 
     def __del__(self):
         p.disconnect()
+
+    def Get_Fitness(self):
+        self.robot.Get_Fitness()

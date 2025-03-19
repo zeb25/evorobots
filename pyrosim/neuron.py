@@ -53,12 +53,13 @@ class NEURON:
         return self.type == c.MOTOR_NEURON
 
     def Print(self):
+        pass
 
         # self.Print_Name()
 
         # self.Print_Type()
 
-        self.Print_Value()
+        # self.Print_Value()
 
         # print("")
 

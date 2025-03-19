@@ -1,7 +1,7 @@
 import math
 
 # Simulation parameters
-ITERATIONS = 1000 # Number of iterations in the simulation loop	
+ITERATIONS = 700 # Number of iterations in the simulation loop	
 TIME_STEP = 1/60 # Simulation time step (to maintain real-time sync)	
 
 # Physics parameters
@@ -18,3 +18,5 @@ PHASE_OFFSET = 0 # Phase offset for first leg movement
 PHASE_OFFSET_2 = math.pi / 2 # Phase offset for the second leg movement (out of phase with first leg)	
 
 MAX_FORCE = 50 # Maximum force applied by the motors	
+
+numberOfGenerations = 10 # Number of generations for the genetic algorithm

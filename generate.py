@@ -3,23 +3,7 @@ import random
 
 def Create_World():
     pyrosim.Start_SDF("world.sdf")
-
-    length = 1
-    width = 1
-    height = 1
-
-    x = -2
-    y = 2
-    z = 0.5
-
-    pyrosim.Send_Cube(name="Box", pos=[x,y,z] , size=[length, width, height])
-
     pyrosim.End()
-
-'''
-def Create_Robot():
-    pass
-'''
 
 def Generate_Body():
     pyrosim.Start_URDF("body.urdf")
@@ -42,7 +26,6 @@ def Generate_Brain():
     pyrosim.Send_Sensor_Neuron(name = 0 , linkName = "Torso")
     pyrosim.Send_Sensor_Neuron(name = 1 , linkName = "BackLeg")
     pyrosim.Send_Sensor_Neuron(name = 2 , linkName = "FrontLeg")
-
     pyrosim.Send_Motor_Neuron( name = 3 , jointName = "Torso_BackLeg")
     pyrosim.Send_Motor_Neuron( name = 4 , jointName = "Torso_FrontLeg")
 
@@ -62,5 +45,3 @@ def Generate_Brain():
 Create_World()
 Generate_Body()
 Generate_Brain()
-
-
