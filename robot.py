@@ -9,17 +9,24 @@ import constants as c
 from sensor import SENSOR
 from motor import MOTOR
 from pyrosim.neuralNetwork import NEURAL_NETWORK
+import os
 
 class ROBOT:
 
-    def __init__(self):
-        self.sensors = {}
+    def __init__(self, solutionID):
+        self.solutionID = solutionID  # NEW:
         self.motors = {}
-        self.robotId = p.loadURDF("body.urdf")
+        self.sensors = {}
+        self.robotID = p.loadURDF("body.urdf")
+        pyrosim.Prepare_To_Simulate(self.robotID)
+        # Use unique brain file name based on solutionID
+        brainFile = "brain" + str(solutionID) + ".nndf"  # NEW:
+        print(f"Loading brain file: {brainFile}")
 
-        # Prepare simulation
-        pyrosim.Prepare_To_Simulate(self.robotId)
-        self.nn = NEURAL_NETWORK("brain.nndf")
+        self.nn = NEURAL_NETWORK(brainFile)
+        # Delete the brain file after it is read
+        os.system("rm " + brainFile)  # NEW:
+        print(f"Brain file deleted: {brainFile}")
 
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
@@ -43,15 +50,19 @@ class ROBOT:
                 if isinstance(jointName, str):
                     jointName = jointName.encode("utf-8")
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
-                self.motors[jointName].Set_Value(self.robotId, desiredAngle)
+                self.motors[jointName].Set_Value(self.robotID, desiredAngle)
 
     def Think(self):
         self.nn.Update()
-        self.nn.Print()
 
     def Get_Fitness(self):
-       stateOfLinkZero= p.getLinkState(self.robotId,0)
-       positionOfLinkZero=stateOfLinkZero[0]
-       xCoordinateOfLinkZero=positionOfLinkZero[0]       
-       with open("data/fitness.txt", "w") as f:
-        f.write(str(xCoordinateOfLinkZero))
+        stateOfLinkZero = p.getLinkState(self.robotID, 0)
+        positionOfLinkZero = stateOfLinkZero[0]
+        xCoordinateOfLinkZero = positionOfLinkZero[0]
+        # Write fitness into a temporary file then move it to a unique fitness file.
+        tmpFile = "tmp" + str(self.solutionID) + ".txt"  # NEW:
+        fitnessFile = "fitness" + str(self.solutionID) + ".txt"  # NEW:
+        with open(tmpFile, "w") as f:
+            f.write(str(xCoordinateOfLinkZero))
+        os.system("mv " + tmpFile + " " + fitnessFile)  # NEW:
+        return xCoordinateOfLinkZero
