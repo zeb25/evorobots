@@ -20,6 +20,7 @@ class PARALLEL_HILL_CLIMBER:  # NEW: Renamed class
     def Evolve(self):
         # First, evaluate all parents in parallel using GUI mode.
         self.Evaluate(self.parents, "DIRECT")  # NEW:
+        print("Evaluating")  # NEW:
         # Now evolve for a number of generations.
         for gen in range(numberOfGenerations):  # NEW:
             self.Spawn()           # NEW:

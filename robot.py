@@ -14,20 +14,12 @@ import os
 class ROBOT:
 
     def __init__(self, solutionID):
-        self.solutionID = solutionID  # NEW:
+        self.solutionID = solutionID
         self.motors = {}
         self.sensors = {}
         self.robotID = p.loadURDF("body.urdf")
         pyrosim.Prepare_To_Simulate(self.robotID)
-        # Use unique brain file name based on solutionID
-        brainFile = "brain" + str(solutionID) + ".nndf"  # NEW:
-        print(f"Loading brain file: {brainFile}")
-
-        self.nn = NEURAL_NETWORK(brainFile)
-        # Delete the brain file after it is read
-        os.system("rm " + brainFile)  # NEW:
-        print(f"Brain file deleted: {brainFile}")
-
+        self.nn = NEURAL_NETWORK("brain" + str(solutionID) + ".nndf")
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
 
@@ -46,11 +38,10 @@ class ROBOT:
     def Act(self, t):
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
-                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
-                if isinstance(jointName, str):
-                    jointName = jointName.encode("utf-8")
-                desiredAngle = self.nn.Get_Value_Of(neuronName)
-                self.motors[jointName].Set_Value(self.robotID, desiredAngle)
+                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName).encode("utf-8")
+                desiredAngle = self.nn.Get_Value_Of(neuronName) * c.motorJointRange
+                if jointName in self.motors:
+                    self.motors[jointName].Set_Value(self, desiredAngle)
 
     def Think(self):
         self.nn.Update()
@@ -62,7 +53,10 @@ class ROBOT:
         # Write fitness into a temporary file then move it to a unique fitness file.
         tmpFile = "tmp" + str(self.solutionID) + ".txt"  # NEW:
         fitnessFile = "fitness" + str(self.solutionID) + ".txt"  # NEW:
+        print(f"Writing fitness to temporary file: {tmpFile}")
         with open(tmpFile, "w") as f:
             f.write(str(xCoordinateOfLinkZero))
+        print(f"Moving temporary file to fitness file: {fitnessFile}")
         os.system("mv " + tmpFile + " " + fitnessFile)  # NEW:
+        print(f"Fitness file written: {fitnessFile}")
         return xCoordinateOfLinkZero

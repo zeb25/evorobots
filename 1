@@ -1,0 +1,14 @@
+pybullet build time: Jan 17 2025 20:51:41
+b3Warning[examples/Importers/ImportURDFDemo/BulletUrdfImporter.cpp,126]:
+expected a world element, continuing without it.Traceback (most recent call last):
+  File "/Users/zoebell/evorobots/simulate.py", line 16, in <module>
+    simulation.Run()
+  File "/Users/zoebell/evorobots/simulation.py", line 36, in Run
+    self.robot.Act(t)
+  File "/Users/zoebell/evorobots/robot.py", line 44, in Act
+    self.motors[jointName].Set_Value(self, desiredAngle)
+  File "/Users/zoebell/evorobots/motor.py", line 20, in Set_Value
+    pyrosim.Set_Motor_For_Joint(
+  File "/Users/zoebell/evorobots/pyrosim/pyrosim.py", line 161, in Set_Motor_For_Joint
+    p.setJointMotorControl2(
+TypeError: 'ROBOT' object cannot be interpreted as an integer

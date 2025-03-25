@@ -21,3 +21,10 @@ MAX_FORCE = 50 # Maximum force applied by the motors
 
 numberOfGenerations = 10 # Number of generations for the genetic algorithm
 populationSize = 10 # Size of the population for the genetic algorithm
+
+# Neural network parameters
+numSensorNeurons = 4  # Number of sensor neurons
+numMotorNeurons = 2  # Number of motor neurons
+
+# Motor joint range
+motorJointRange = 1.0  # Initial value
