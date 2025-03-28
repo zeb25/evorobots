@@ -1,7 +1,7 @@
 import math
 
 # Simulation parameters
-ITERATIONS = 700 # Number of iterations in the simulation loop	
+ITERATIONS = 1000 # Number of iterations in the simulation loop	
 TIME_STEP = 1/60 # Simulation time step (to maintain real-time sync)	
 
 # Physics parameters
@@ -21,3 +21,8 @@ MAX_FORCE = 50 # Maximum force applied by the motors
 
 numberOfGenerations = 10 # Number of generations for the genetic algorithm
 populationSize = 10 # Size of the population for the genetic algorithm
+
+numSensorNeurons = 4
+numMotorNeurons = 8
+
+motorJointRange = .2

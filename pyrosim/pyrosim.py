@@ -49,9 +49,9 @@ def Get_Touch_Sensor_Value_For_Link(linkName):
     desiredLinkIndex = linkNamesToIndices[linkName]
 
     pts = p.getContactPoints()
-
-    if pts is None:
-        return touchValue
+    
+    if pts is None:  # Prevent iteration on None
+        return touchValue  # No contacts, return default value
 
     for pt in pts:
 
@@ -137,11 +137,11 @@ def Send_Cube(name="default",pos=[0,0,0],size=[1,1,1]):
 
     availableLinkIndex = availableLinkIndex + 1
 
-def Send_Joint(name,parent,child,type,position):
+def Send_Joint(name,parent,child,type,position,jointAxis):
 
     joint = JOINT(name,parent,child,type,position)
 
-    joint.Save(f)
+    joint.Save(f, jointAxis)
 
 def Send_Motor_Neuron(name,jointName):
 
