@@ -1,38 +1,38 @@
-# solution.py
 import numpy as np
 import os
 import pyrosim.pyrosim as pyrosim
 import random
 import time
-import constants as c  # NEW: Import constants for simulation parameters
+import constants as c 
 
 class SOLUTION:
-    def __init__(self, myID):  # NEW: Accept a unique ID argument.
-        self.myID = myID  # NEW:
+    def __init__(self, myID): 
+        self.myID = myID  
         self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons)
-        self.weights = self.weights * 2 - 1
+        self.weights = self.weights * 2 - 1 
 
-    def Set_ID(self, newID):  # NEW: Update the solution's unique ID.
+    def Set_ID(self, newID):  
+        # Update the solution's unique ID.
         self.myID = newID
 
-    def Start_Simulation(self, mode):  # NEW:
+    def Start_Simulation(self, mode):
         self.Create_World()
         self.Create_Body()
         self.Create_Brain()
         # Build a command string that passes mode and this solution's unique ID to simulate.py.
-        cmd = "python simulate.py " + mode + " " + str(self.myID) + " &"  # NEW:
+        cmd = "python simulate.py " + mode + " " + str(self.myID) + " &" 
         # print("Command:", cmd)  # (Optional debug)
         os.system(cmd)
 
-    def Wait_For_Simulation_To_End(self):  # NEW:
-        fitnessFileName = "fitness" + str(self.myID) + ".txt"  # NEW:
+    def Wait_For_Simulation_To_End(self): 
+        fitnessFileName = "fitness" + str(self.myID) + ".txt" 
         while not os.path.exists(fitnessFileName):
             time.sleep(0.01)
         with open(fitnessFileName, "r") as fitnessFile:
             fitnessStr = fitnessFile.read().strip()
         self.fitness = float(fitnessStr)
-        print("Solution", self.myID, "fitness:", self.fitness)  # NEW: For verification
-        os.system("rm " + fitnessFileName)  # NEW: Clean up the fitness file
+        print("Solution", self.myID, "fitness:", self.fitness)
+        os.system("rm " + fitnessFileName)  # Clean up the fitness file
 
     def Evaluate(self, mode):  # (Optional convenience method – not used in PHC now)
         self.Start_Simulation(mode)
@@ -110,7 +110,7 @@ class SOLUTION:
         pyrosim.End()
 
     def Create_Brain(self):
-        brainFileName = "brain" + str(self.myID) + ".nndf"  # NEW: Use unique filename
+        brainFileName = "brain" + str(self.myID) + ".nndf"  # Use unique filename
         pyrosim.Start_NeuralNetwork(brainFileName)
         # Sensor neurons
         pyrosim.Send_Sensor_Neuron(name="0", linkName="FrontLowerLeg")
@@ -135,7 +135,7 @@ class SOLUTION:
                 pyrosim.Send_Synapse(sourceNeuronName=str(currentRow), targetNeuronName=str(currentColumn + c.numSensorNeurons), weight=weight)
         pyrosim.End()
         
-    def Mutate(self):  # NEW:
+    def Mutate(self):
         randomRow = random.randint(0, c.numSensorNeurons-1)
         randomColumn = random.randint(0, c.numMotorNeurons-1)
         self.weights[randomRow, randomColumn] = random.random() * 2 - 1

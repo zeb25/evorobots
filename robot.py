@@ -12,56 +12,95 @@ from pyrosim.neuralNetwork import NEURAL_NETWORK
 import os
 
 class ROBOT:
+    """
+    The ROBOT class represents the robot in the simulation.
+    It manages the robot's sensors, motors, neural network, and fitness evaluation.
+    """
 
     def __init__(self, solutionID):
-        self.solutionID = solutionID  # NEW:
-        self.motors = {}
-        self.sensors = {}
-        self.robotID = p.loadURDF("body.urdf")
-        pyrosim.Prepare_To_Simulate(self.robotID)
-        # Use unique brain file name based on solutionID
-        brainFile = "brain" + str(solutionID) + ".nndf"  # NEW:
-        # print(f"Loading brain file: {brainFile}")
-        self.nn = NEURAL_NETWORK(brainFile)
-        # Delete the brain file after it is read
-        os.system("rm " + brainFile)  # NEW:
-        # print(f"Brain file deleted: {brainFile}")
+        """
+        Initializes the robot.
 
+        Args:
+            solutionID (int): A unique identifier for the solution being simulated.
+        """
+        self.solutionID = solutionID  # Store the solution ID
+        self.motors = {}  # Dictionary to store motor objects
+        self.sensors = {}  # Dictionary to store sensor objects
+
+        # Load the robot's URDF file into the simulation
+        self.robotID = p.loadURDF("body.urdf")
+
+        # Prepare the robot for simulation using Pyrosim
+        pyrosim.Prepare_To_Simulate(self.robotID)
+
+        # Load the neural network for the robot using the solution ID
+        brainFile = "brain" + str(solutionID) + ".nndf"
+        self.nn = NEURAL_NETWORK(brainFile)
+
+        # Delete the brain file after it is loaded
+        os.system("rm " + brainFile)
+
+        # Prepare the robot's sensors and motors
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
 
     def Prepare_To_Sense(self):
+        """
+        Initializes the robot's sensors by associating them with the robot's links.
+        """
         for linkName in pyrosim.linkNamesToIndices:
-            self.sensors[linkName] = SENSOR(linkName)
+            self.sensors[linkName] = SENSOR(linkName)  # Create a SENSOR object for each link
 
     def Sense(self, t):
+        """
+        Collects sensor data for the current time step.
+        """
         for sensor in self.sensors.values():
-            sensor.Get_Value(t)
+            sensor.Get_Value(t)  # Retrieve and store sensor values
 
     def Prepare_To_Act(self):
+        """
+        Initializes the robot's motors by associating them with the robot's joints.
+        """
         for jointName in pyrosim.jointNamesToIndices:
-            self.motors[jointName] = MOTOR(jointName)
+            self.motors[jointName] = MOTOR(jointName)  # Create a MOTOR object for each joint
 
     def Act(self, t):
+        """
+        Actuates the robot's motors based on the neural network's output.
+        """
         for neuronName in self.nn.Get_Neuron_Names():
-            if self.nn.Is_Motor_Neuron(neuronName):
-                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
-                if isinstance(jointName, str):
+            if self.nn.Is_Motor_Neuron(neuronName):  # Check if the neuron is a motor neuron
+                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)  # Get the joint controlled by the neuron
+                if isinstance(jointName, str):  # Ensure the joint name is encoded properly
                     jointName = jointName.encode("utf-8")
-                desiredAngle = self.nn.Get_Value_Of(neuronName)
-                self.motors[jointName].Set_Value(self.robotID, desiredAngle)
+                desiredAngle = self.nn.Get_Value_Of(neuronName)  # Get the desired angle for the joint
+                self.motors[jointName].Set_Value(self.robotID, desiredAngle)  # Set the motor value
 
     def Think(self):
+        """
+        Updates the robot's neural network to process sensor data and compute motor outputs.
+        """
         self.nn.Update()
 
     def Get_Fitness(self):
+        """
+        Evaluates the robot's fitness based on its x-coordinate position.
+        The fitness value is written to a temporary file and then moved to a unique fitness file.
+        """
+        # Get the robot's base position
         basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotID)
         basePosition = basePositionAndOrientation[0]
-        xPosition = basePosition[0]
-        # Write fitness into a temporary file then move it to a unique fitness file.
-        tmpFile = "tmp" + str(self.solutionID) + ".txt"  # NEW:
-        fitnessFile = "fitness" + str(self.solutionID) + ".txt"  # NEW:
+        xPosition = basePosition[0]  # Extract the x-coordinate
+
+        # Write the fitness value to a temporary file
+        tmpFile = "tmp" + str(self.solutionID) + ".txt"
+        fitnessFile = "fitness" + str(self.solutionID) + ".txt"
         with open(tmpFile, "w") as f:
             f.write(str(xPosition))
-        os.system("mv " + tmpFile + " " + fitnessFile)  # NEW:
-        return xPosition
+
+        # Move the temporary file to the final fitness file
+        os.system("mv " + tmpFile + " " + fitnessFile)
+
+        return xPosition # Return the x-coordinate as the fitness value

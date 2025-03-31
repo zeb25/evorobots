@@ -51,7 +51,7 @@ def Get_Touch_Sensor_Value_For_Link(linkName):
     pts = p.getContactPoints()
     
     if pts is None:  # Prevent iteration on None
-        return touchValue  # No contacts, return default value
+        return touchValue  # return default value
 
     for pt in pts:
 

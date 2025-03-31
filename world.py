@@ -10,7 +10,6 @@ import constants as c
 class WORLD:
 
     def __init__(self):
-
        # Load environment & robot
         self.planeId = p.loadURDF("plane.urdf")
         p.loadSDF("world.sdf")

@@ -22,7 +22,8 @@ MAX_FORCE = 50 # Maximum force applied by the motors
 numberOfGenerations = 10 # Number of generations for the genetic algorithm
 populationSize = 10 # Size of the population for the genetic algorithm
 
-numSensorNeurons = 4
-numMotorNeurons = 8
+numSensorNeurons = 4 # Number of sensor neurons in the neural network
+numMotorNeurons = 8 # Number of motor neurons in the neural network
 
-motorJointRange = .2
+motorJointRange = .2 # Range of motion for motor joints (in radians)
+# Note: The motorJointRange is set to 0.2 radians, which is approximately 11.5 degrees.
