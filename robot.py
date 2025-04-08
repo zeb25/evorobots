@@ -58,6 +58,16 @@ class ROBOT:
         """
         for sensor in self.sensors.values():
             sensor.Get_Value(t)  # Retrieve and store sensor values
+            # print(sensor.Get_Value(t))  # Print the sensor value for debugging
+            
+    def Get_Sensor_Values(self, t):
+        """
+        Returns the values of all sensors as a dictionary.
+        """
+        sensorValues = {}
+        for sensorName in self.sensors:
+            sensorValues[sensorName] = self.sensors[sensorName].Get_Value(t)
+        return sensorValues  # Return the dictionary of sensor values
 
     def Prepare_To_Act(self):
         """
@@ -86,21 +96,23 @@ class ROBOT:
 
     def Get_Fitness(self):
         """
-        Evaluates the robot's fitness based on its x-coordinate position.
+        Evaluates the robot's fitness based on its z-coordinate position.
         The fitness value is written to a temporary file and then moved to a unique fitness file.
         """
         # Get the robot's base position
         basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotID)
         basePosition = basePositionAndOrientation[0]
-        xPosition = basePosition[0]  # Extract the x-coordinate
+        # xPosition = basePosition[0]  # Extract the x-coordinate
+        zPosition = basePosition[2] # Extract the z-coordinate (height)
+
 
         # Write the fitness value to a temporary file
         tmpFile = "tmp" + str(self.solutionID) + ".txt"
         fitnessFile = "fitness" + str(self.solutionID) + ".txt"
         with open(tmpFile, "w") as f:
-            f.write(str(xPosition))
+            f.write(str(zPosition))
 
         # Move the temporary file to the final fitness file
         os.system("mv " + tmpFile + " " + fitnessFile)
 
-        return xPosition # Return the x-coordinate as the fitness value
+        return zPosition # Return the x-coordinate as the fitness value

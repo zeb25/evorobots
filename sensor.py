@@ -31,6 +31,8 @@ class SENSOR:
             t (int): The current time step in the simulation.
         """
         self.values[t] = pyrosim.Get_Touch_Sensor_Value_For_Link(self.linkName)  
+        print("Sensor value for link", self.linkName, "at time", t, ":", self.values[t])
+        self.Save_Values()  # Save the sensor values after each time step
 
     def Save_Values(self):
         """
@@ -38,4 +40,4 @@ class SENSOR:
 
         The values are saved as a NumPy array in the "data/sensor_values.npy" file.
         """
-        numpy.save("data/sensor_values.npy", self.values) 
+        numpy.save("data/sensor_values.txt", self.values)

@@ -3,9 +3,9 @@ from solution import SOLUTION
 from constants import populationSize, numberOfGenerations
 import copy
 
-class PARALLEL_HILL_CLIMBER:
+class JUMPER:
     """
-    The PARALLEL_HILL_CLIMBER class implements a parallel hill-climbing algorithm.
+    The JUMPER class implements a parallel hill-climbing algorithm.
     It manages a population of solutions, evaluates their fitness, and evolves them over generations to optimize fitness.
     """
 
@@ -20,10 +20,13 @@ class PARALLEL_HILL_CLIMBER:
 
         # Initialize the population of parent solutions
         self.nextAvailableID = 0  # Counter to assign unique IDs to solutions
+
         self.parents = {}  # Dictionary to store parent solutions
-        for i in range(populationSize):
-            self.parents[self.nextAvailableID] = SOLUTION(self.nextAvailableID)
-            self.nextAvailableID += 1
+
+
+        for i in range(populationSize): 
+            self.parents[self.nextAvailableID] = SOLUTION(self.nextAvailableID) # Create a new solution
+            self.nextAvailableID += 1 # Increment the ID for the next solution
 
     def Evolve(self):
         """
