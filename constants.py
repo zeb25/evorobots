@@ -5,25 +5,25 @@ ITERATIONS = 1000 # Number of iterations in the simulation loop
 TIME_STEP = 1/60 # Simulation time step (to maintain real-time sync)	
 
 # Physics parameters
-GRAVITY = -9.8 # Gravitational acceleration (m/s²)	
+GRAVITY = -9.8  # Keep gravity as is, or reduce it slightly (e.g., -5.0 for a lower-gravity environment)
 
 # Motor control parameters
-AMPLITUDE = math.pi / 4 # Amplitude of sinusoidal motion for motor control	
-AMPLITUDE_2 = math.pi / 4 # Amplitude for the second leg	
+AMPLITUDE = math.pi / 2  # Increase amplitude for greater leg motion (was math.pi / 3)
+AMPLITUDE_2 = math.pi / 2  # Increase amplitude for the second leg (was math.pi / 3)
 
-FREQUENCY = 30 # Frequency of oscillation (how fast the legs move)	
-FREQUENCY_2 = 30 / 2 # Frequency for the second leg	
+FREQUENCY = 40  # Slightly increase frequency for faster leg motion (was 35)
+FREQUENCY_2 = 40 / 2  # Adjust frequency for the second leg (was 35 / 2)
 
 PHASE_OFFSET = 0 # Phase offset for first leg movement	
 PHASE_OFFSET_2 = math.pi / 2 # Phase offset for the second leg movement (out of phase with first leg)	
 
-MAX_FORCE = 50 # Maximum force applied by the motors	
+MAX_FORCE = 100  # Increase maximum force applied by the motors (was 80)
 
-numberOfGenerations = 1 # Number of generations for the genetic algorithm
+numberOfGenerations = 10 # Number of generations for the genetic algorithm
 populationSize = 1 # Size of the population for the genetic algorithm
 
 numSensorNeurons = 4 # Number of sensor neurons in the neural network
 numMotorNeurons = 8 # Number of motor neurons in the neural network
 
-motorJointRange = .2 # Range of motion for motor joints (in radians)
-# Note: The motorJointRange is set to 0.2 radians, which is approximately 11.5 degrees.
+motorJointRange = 0.4  # Increase range of motion for motor joints (was 0.3)
+# Note: The motorJointRange is set to 0.4 radians, which is approximately 22.9 degrees.

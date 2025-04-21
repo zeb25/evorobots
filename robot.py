@@ -96,23 +96,28 @@ class ROBOT:
 
     def Get_Fitness(self):
         """
-        Evaluates the robot's fitness based on its z-coordinate position.
-        The fitness value is written to a temporary file and then moved to a unique fitness file.
+        Evaluates the robot's fitness based on the longest consecutive sequence
+        where the robot is off the ground (indicated by -1 in sensor data).
         """
-        # Get the robot's base position
-        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotID)
-        basePosition = basePositionAndOrientation[0]
-        # xPosition = basePosition[0]  # Extract the x-coordinate
-        zPosition = basePosition[2] # Extract the z-coordinate (height)
+        maxStreak = 0  # Maximum streak of consecutive -1 values
+        currentStreak = 0  # Current streak of consecutive -1 values
 
+        # Iterate over the sensor matrix to calculate the streak
+        for t in range(len(self.sensors[next(iter(self.sensors))].values)):  # Iterate over time steps
+            allOffGround = all(sensor.values[t] == -1 for sensor in self.sensors.values())
+            if allOffGround:
+                currentStreak += 1
+                maxStreak = max(maxStreak, currentStreak)
+            else:
+                currentStreak = 0
 
-        # Write the fitness value to a temporary file
+        # Write the fitness value (maxStreak) to a temporary file
         tmpFile = "tmp" + str(self.solutionID) + ".txt"
         fitnessFile = "fitness" + str(self.solutionID) + ".txt"
         with open(tmpFile, "w") as f:
-            f.write(str(zPosition))
+            f.write(str(maxStreak))
 
         # Move the temporary file to the final fitness file
         os.system("mv " + tmpFile + " " + fitnessFile)
 
-        return zPosition # Return the x-coordinate as the fitness value
+        return maxStreak  # Return the fitness score

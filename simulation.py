@@ -66,7 +66,9 @@ class SIMULATION:
 
             # Record touch sensor values for this time step
             for i, sensor in enumerate(self.robot.sensors.values()):
-                self.sensor_matrix[t, i] = 1 if sensor.values[t] > 0 else 0  # 1 if touching, 0 otherwise
+                # Here we use -1 when a sensor is NOT in contact (i.e. off the ground) and 1 when it IS contacting.
+                self.sensor_matrix[t, i] = -1 if sensor.values[t] <= 0 else 1
+        
 
             # If in GUI mode, pause briefly to allow visualization
             if self.directOrGUI == "GUI":
