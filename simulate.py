@@ -19,6 +19,3 @@ simulation = SIMULATION(mode, solutionID)
 
 # Run the simulation loop
 simulation.Run()
-
-# Retrieve and save the fitness of the robot after the simulation ends
-simulation.Get_Fitness()

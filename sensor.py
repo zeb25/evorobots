@@ -31,7 +31,7 @@ class SENSOR:
             t (int): The current time step in the simulation.
         """
         self.values[t] = pyrosim.Get_Touch_Sensor_Value_For_Link(self.linkName)  
-        print("Sensor value for link", self.linkName, "at time", t, ":", self.values[t])
+        # print("Sensor value for link", self.linkName, "at time", t, ":", self.values[t])
         self.Save_Values()  # Save the sensor values after each time step
 
     def Save_Values(self):

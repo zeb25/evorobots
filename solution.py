@@ -3,7 +3,7 @@ import os
 import pyrosim.pyrosim as pyrosim
 import random
 import time
-import constants as c 
+import constants as c
 
 class SOLUTION:
     def __init__(self, myID): 
@@ -11,21 +11,37 @@ class SOLUTION:
         self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons)
         self.weights = self.weights * 2 - 1 
 
+        self.fitness_type = "long_jump"  # Default fitness type
+
     def Set_ID(self, newID):  
         # Update the solution's unique ID.
         self.myID = newID
 
+    def Set_Fitness_Type(self, fitness_type):
+        """
+        Sets the fitness type for this solution.
+        Args:
+            fitness_type (str): The type of fitness function ("long_jump" or "high_jump").
+        """
+        self.fitness_type = fitness_type
+
     def Start_Simulation(self, mode):
+        """
+        Starts the simulation process.
+        """
         self.Create_World()
         self.Create_Body()
         self.Create_Brain()
         # Build a command string that passes mode and this solution's unique ID to simulate.py.
         cmd = "python simulate.py " + mode + " " + str(self.myID) + " &" 
-        # print("Command:", cmd)  # (Optional debug)
+        #         print("Command:", cmd)  # (Optional debug)
         os.system(cmd)
 
-    def Wait_For_Simulation_To_End(self): 
-        fitnessFileName = "fitness" + str(self.myID) + ".txt" 
+    def Wait_For_Simulation_To_End(self):
+        dir = "/Users/zoebell/evorobots/output"  # Specify the directory
+        os.makedirs(dir, exist_ok=True)  # Ensure the directory exists
+
+        fitnessFileName = os.path.join(dir, f"fitness{self.myID}.txt")
         while not os.path.exists(fitnessFileName):
             time.sleep(0.01)
         with open(fitnessFileName, "r") as fitnessFile:

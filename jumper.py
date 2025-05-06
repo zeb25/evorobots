@@ -28,12 +28,15 @@ class JUMPER:
             self.parents[self.nextAvailableID] = SOLUTION(self.nextAvailableID) # Create a new solution
             self.nextAvailableID += 1 # Increment the ID for the next solution
 
-    def Evolve(self):
+    def Evolve_With_Fitness_Type(self, fitness_type):
         """
-        Evolves the population of solutions over multiple generations.
-        Each generation involves spawning children, mutating them, evaluating their fitness,
-        and selecting the best solutions to survive.
+        Evolves the population using the specified fitness type.
+        Args:
+            fitness_type (str): The type of fitness function ("long_jump" or "high_jump").
         """
+        for key in self.parents:
+            self.parents[key].Set_Fitness_Type(fitness_type)
+
         # Evaluate the initial population of parents
         self.Evaluate(self.parents, "DIRECT")
 
@@ -52,13 +55,12 @@ class JUMPER:
         """
         Creates a new generation of children by copying and assigning unique IDs to the parents.
         """
-        self.children = {}  # Dictionary to store child solutions
+        print("Spawning new children...")
+        self.children = {}
         for key in self.parents:
-            # Create a deep copy of each parent
             child = copy.deepcopy(self.parents[key])
-            # Assign a new unique ID to the child
             child.Set_ID(self.nextAvailableID)
-            self.children[key] = child  # Store the child in the dictionary
+            self.children[key] = child
             self.nextAvailableID += 1
 
     def Mutate(self):
@@ -76,13 +78,13 @@ class JUMPER:
             solutions (dict): A dictionary of solutions to evaluate.
             mode (str): The simulation mode ("DIRECT" or "GUI").
         """
-        # Start simulations for all solutions
         for key in solutions:
             solutions[key].Start_Simulation(mode)
 
-        # Wait for all simulations to finish and retrieve fitness values
         for key in solutions:
+            print(f"Waiting for simulation to finish for solution ID: {key}")
             solutions[key].Wait_For_Simulation_To_End()
+            print(f"Simulation finished for solution ID: {key}, fitness: {solutions[key].fitness}")
 
     def Print(self):
         """
@@ -98,11 +100,15 @@ class JUMPER:
     def Select(self):
         """
         Selects the best solutions to survive by comparing the fitness of parents and children.
-        If a child's fitness is better (lower), it replaces the parent.
+        If a child's fitness is better (higher), it replaces the parent.
         """
+        print("Selecting the best solutions...")
         for key in self.children:
+            print(f"Parent fitness: {self.parents[key].fitness}, Child fitness: {self.children[key].fitness}")
             if self.children[key].fitness > self.parents[key].fitness:
+                print(f"Replacing parent with child for solution ID: {key}")
                 self.parents[key] = self.children[key]
+        print("Selection process completed.")
 
     def Show_Best(self):
         """
@@ -113,7 +119,7 @@ class JUMPER:
         bestFitness = -1000.0  # Change the initial value to a very low number
         for key in self.parents:
             fitness = self.parents[key].fitness
-            if fitness > bestFitness:  # Change < to >
+            if fitness > bestFitness: 
                 bestFitness = fitness
                 bestKey = key
 

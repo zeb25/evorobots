@@ -17,14 +17,16 @@ class ROBOT:
     It manages the robot's sensors, motors, neural network, and fitness evaluation.
     """
 
-    def __init__(self, solutionID):
+    def __init__(self, solutionID, x=1.0):
         """
         Initializes the robot.
 
         Args:
             solutionID (int): A unique identifier for the solution being simulated.
+            x (float): A parameter to control the frequency of the sine wave for the touch sensor.
         """
         self.solutionID = solutionID  # Store the solution ID
+        self.x = x  # Store the frequency parameter for the sine wave
         self.motors = {}  # Dictionary to store motor objects
         self.sensors = {}  # Dictionary to store sensor objects
 
@@ -58,7 +60,11 @@ class ROBOT:
         """
         for sensor in self.sensors.values():
             sensor.Get_Value(t)  # Retrieve and store sensor values
-            # print(sensor.Get_Value(t))  # Print the sensor value for debugging
+
+        # Overwrite the value of one touch sensor with sin(xt)
+        if self.sensors:  # Ensure there are sensors available
+            first_sensor = next(iter(self.sensors.values()))  # Get the first sensor
+            first_sensor.values[t] = math.sin(self.x * t)  # Overwrite with sin(xt)
             
     def Get_Sensor_Values(self, t):
         """
@@ -93,31 +99,3 @@ class ROBOT:
         Updates the robot's neural network to process sensor data and compute motor outputs.
         """
         self.nn.Update()
-
-    def Get_Fitness(self):
-        """
-        Evaluates the robot's fitness based on the longest consecutive sequence
-        where the robot is off the ground (indicated by -1 in sensor data).
-        """
-        maxStreak = 0  # Maximum streak of consecutive -1 values
-        currentStreak = 0  # Current streak of consecutive -1 values
-
-        # Iterate over the sensor matrix to calculate the streak
-        for t in range(len(self.sensors[next(iter(self.sensors))].values)):  # Iterate over time steps
-            allOffGround = all(sensor.values[t] == -1 for sensor in self.sensors.values())
-            if allOffGround:
-                currentStreak += 1
-                maxStreak = max(maxStreak, currentStreak)
-            else:
-                currentStreak = 0
-
-        # Write the fitness value (maxStreak) to a temporary file
-        tmpFile = "tmp" + str(self.solutionID) + ".txt"
-        fitnessFile = "fitness" + str(self.solutionID) + ".txt"
-        with open(tmpFile, "w") as f:
-            f.write(str(maxStreak))
-
-        # Move the temporary file to the final fitness file
-        os.system("mv " + tmpFile + " " + fitnessFile)
-
-        return maxStreak  # Return the fitness score
